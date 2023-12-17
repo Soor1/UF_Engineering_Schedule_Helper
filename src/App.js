@@ -1,5 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import 'handsontable/dist/handsontable.full.min.css';
+import { HotTable } from '@handsontable/react';
+import { registerAllModules } from 'handsontable/registry';
+import { CSVLink } from 'react-csv';
+
+// Register Handsontable's modules
+registerAllModules();
+
+export const ExampleComponent = () => {
+  const initialData = [
+    [" ","Summer 1","Fall 1" ,"Spring 1","Summer 2","Fall 2" ,"Spring 2","Summer 3","Fall 3" ,"Spring 3","Summer 4","Fall 4" ,"Spring 4"],
+    ["Course 1"],
+    ["Course 2"],
+    ["Course 3"],
+    ["Course 4"],
+    ["Course 5"],
+    [],
+    ["Total Credits"],
+  ];
+
+  // Use state to track changes in the table data
+  const [data, setData] = useState(initialData);
+
+  return (
+    <div>
+      <HotTable
+        data={data}
+        rowHeaders={true}
+        colHeaders={true}
+        height="auto"
+        licenseKey="non-commercial-and-evaluation" // for non-commercial use only
+        afterChange={(changes) => {
+          // Ensure changes is an array before iterating over it
+          if (Array.isArray(changes)) {
+            // Update the state with the changed data
+            const newData = data.map(row => [...row]);
+            changes.forEach(([row, prop, oldValue, newValue]) => {
+              newData[row][prop] = newValue;
+            });
+            setData(newData);
+          }
+        }}
+      />
+
+      <div className="mt-4 text-center">
+        <button
+          type="button"
+          className="bg-blue-500 text-white p-2 rounded cursor-pointer"
+          style={{ marginTop: '1.5rem', width: '300px' }}
+          onClick={() => {
+            // Trigger the CSV download when the button is clicked
+            const csvData = data.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'course_schedule.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }}
+        >
+          Download Course Schedule
+        </button>
+      </div>
+
+    </div>
+  );
+};
 
 function App() {
   const [majors, setMajors] = useState([]);
@@ -41,9 +109,10 @@ function App() {
       });
   };
 
+  // Correct placement of the return statement inside the App component
   return (
     <div className="container mx-auto mt-8 p-8 bg-white rounded shadow-md max-w-md">
-      <h1 className="text-2xl mb-6">UF Engineering Major Course Overlap</h1>
+      <h1 className="text-2xl mb-6">UF Engineering Schedule Helper</h1>
       <form onSubmit={handleSubmit} className="mb-6">
         <label className="block mb-2">
           Select Major 1:
@@ -87,13 +156,56 @@ function App() {
       ) : (
         <div>
           <p className="text-xl font-semibold mb-4">Overlapping Courses:</p>
-          <ul>
+          <div className="overlapping-courses">
             {overlapCourses.map((course, i) => (
-              <li key={i} className="mb-2">{course}</li>
+              <div key={i} className="mb-2">{course}</div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
+
+
+      {/* Links to websites with short descriptions */}
+      <div className="mt-4">
+      <hr />
+      <p>
+        <a href="https://ufcourses.org/" target="_blank" rel="noopener noreferrer" style={{ color: 'black',}}>
+          <strong>UF Course Search (Credits: Jim Su and Matthew DeGuzman):</strong>
+        </a> Best way to search what courses and professors are available (RateMyProfessor built-in).
+      </p>
+      <p>
+        <a href="https://one.uf.edu/soc/" target="_blank" rel="noopener noreferrer" style={{ color: 'black',}}>
+          <strong>One.UF Course Search:</strong>
+        </a> UF website to search what courses and professors are available.
+      </p>
+      <p>
+        <a href="https://career.ufl.edu/gain-experience/student-outcomes/" target="_blank" rel="noopener noreferrer" style={{ color: 'black',}}>
+          <strong>Career Connections Center Student Outcomes:</strong>
+        </a> Explore student outcomes (salary, location, etc.) for graduates of all majors.
+      </p>
+      <p>
+        <a href="https://gatorevals.aa.ufl.edu/public-results/" target="_blank" rel="noopener noreferrer" style={{ color: 'black',}}>
+          <strong>GatorEvals:</strong>
+        </a> View course evaluation data for any professor on campus.
+      </p>
+      <p>
+        <a href="https://www.registr-uf.com/" target="_blank" rel="noopener noreferrer" style={{ color: 'black',}}>
+          <strong>Registr:</strong>
+        </a> Best way to plan the course schedule for the upcoming semester.
+      </p>
+      <hr />
+    </div>
+
+      
+      {/* Render the ExampleComponent here */}
+      <ExampleComponent />
+
+      {/* Created by section with hyperlink */}
+      <div className="mt-4 text-center text-gray-500">
+        <p>
+          <strong>Created By:</strong> <a href="https://www.linkedin.com/in/soor-hansalia/" target="_blank" rel="noopener noreferrer" style={{ color: 'black',}}>Soor Hansalia</a>
+        </p>
+      </div>
     </div>
   );
 }

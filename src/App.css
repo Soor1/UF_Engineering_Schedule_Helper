@@ -6,8 +6,8 @@ body {
 }
 
 .container {
-  max-width: 800px;
-  margin: 20px auto;
+  max-width: 1550px;
+  margin: 40px auto;
   padding: 20px;
   background-color: #fff;
   border-radius: 8px;
@@ -18,6 +18,10 @@ h1 {
   color: #32325d;
   font-size: 2rem;
   margin-bottom: 20px;
+}
+
+line {
+  color: #4654f3;
 }
 
 form {
@@ -38,7 +42,7 @@ select {
 }
 
 button {
-  background-color: #6772e5;
+  background-color: #4654f3;
   color: #fff;
   padding: 12px 20px;
   border: none;
@@ -46,15 +50,24 @@ button {
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: #4654f3;
   cursor: not-allowed;
+  cursor: pointer;
 }
 
 button:hover {
-  background-color: #5469d4;
+  background-color: #4654f3;
+  cursor: pointer;
+}
+
+.overlapping-courses {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 5 columns, adjust as needed */
+  gap: 16px; /* Adjust the gap as needed */
 }
 
 ul {
