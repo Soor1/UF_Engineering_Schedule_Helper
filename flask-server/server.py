@@ -1,19 +1,18 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import sqlite3
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-conn = sqlite3.connect('major_data.db')
-cursor = conn.cursor()
+file_path = "/Users/soorhansalia/VS_Code/Major_Overlap/flask-server/major_data.json"
+
+with open(file_path, 'r') as json_file:
+    major_data = json.load(json_file)
 
 def get_overlap_courses(major1, major2):
-    cursor.execute('SELECT value FROM major_data WHERE key = ? OR key = ?', (major1, major2))
-    rows = cursor.fetchall()
-
-    courses_major1 = json.loads(rows[0][0]) if rows and rows[0] else []
-    courses_major2 = json.loads(rows[1][0]) if rows and len(rows) > 1 and rows[1] else []
+    courses_major1 = major_data.get(major1, [])
+    courses_major2 = major_data.get(major2, [])
 
     overlapping_courses = list(set(courses_major1) & set(courses_major2))
     return overlapping_courses
@@ -31,11 +30,6 @@ def overlap_courses():
 
 @app.route("/major_data")
 def course_data():
-    cursor.execute('SELECT * FROM major_data')
-    rows = cursor.fetchall()
-
-    major_data = {row[0]: json.loads(row[1]) for row in rows}
-    
     return jsonify(major_data)
 
 if __name__ == "__main__":
