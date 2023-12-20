@@ -5,7 +5,6 @@ import { HotTable } from '@handsontable/react';
 import { registerAllModules } from 'handsontable/registry';
 import { CSVLink } from 'react-csv';
 
-// Register Handsontable's modules
 registerAllModules();
 
 export const ExampleComponent = () => {
@@ -20,7 +19,6 @@ export const ExampleComponent = () => {
     ["Total Credits"],
   ];
 
-  // Use state to track changes in the table data
   const [data, setData] = useState(initialData);
 
   return (
@@ -77,7 +75,6 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch the available majors from the server
     fetch("/major_data")
       .then(res => res.json())
       .then(data => {
@@ -86,7 +83,6 @@ function App() {
   }, []);
 
   const handleMajorChange = (e, setMajor) => {
-    // Update the selected major when the user makes a selection
     setMajor(e.target.value);
   };
 
@@ -94,12 +90,10 @@ function App() {
     e.preventDefault();
     setLoading(true);
 
-    // Fetch overlapping courses for the selected majors
     fetch(`/overlap_courses?major1=${encodeURIComponent(selectedMajor1)}&major2=${encodeURIComponent(selectedMajor2)}`)
       .then(res => res.json())
       .then(data => {
         console.log("Received response:", data);
-        // Ensure that overlapCourses is an array, even if there are no overlapping courses
         setOverlapCourses(data.overlap_courses || []);
         setLoading(false);
       })
@@ -109,7 +103,6 @@ function App() {
       });
   };
 
-  // Correct placement of the return statement inside the App component
   return (
     <div className="container mx-auto mt-8 p-8 bg-white rounded shadow-md max-w-md">
       <h1 className="text-2xl mb-6">UF Engineering Schedule Helper</h1>
@@ -165,7 +158,6 @@ function App() {
       )}
 
 
-      {/* Links to websites with short descriptions */}
       <div className="mt-4">
       <hr />
       <p>
@@ -197,10 +189,8 @@ function App() {
     </div>
 
       
-      {/* Render the ExampleComponent here */}
       <ExampleComponent />
 
-      {/* Created by section with hyperlink */}
       <div className="mt-4 text-center text-gray-500">
         <p>
           <strong>Created By:</strong> <a href="https://www.linkedin.com/in/soor-hansalia/" target="_blank" rel="noopener noreferrer" style={{ color: 'black',}}>Soor Hansalia</a>
