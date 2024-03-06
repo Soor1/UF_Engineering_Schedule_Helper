@@ -65,7 +65,7 @@ button:hover {
 
 .overlapping-courses {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 5 columns, adjust as needed */
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
 
